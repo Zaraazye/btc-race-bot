@@ -21,7 +21,7 @@ This bot buys only when momentum is confirmed on **two timeframes at once**:
 - 60-minute return above **+50 bps** (not a bounce inside a waterfall), **and**
 - 60-minute return at or above **-150 bps** (never buy into a waterfall).
 
-It exits the whole position on a **50 bps trailing stop** from the highest
+It exits the whole position on a **60 bps trailing stop** from the highest
 close since entry, a **negative 30-minute return**, or a **240-bar time stop**.
 
 Guardrail insurance: if no trade has filled by bar 1200, it buys 25% of
@@ -34,12 +34,18 @@ no randomness, no network. The same bars give the same orders every run.
 
 ## Verified results (official `grade-local`, dev window)
 
-- Net PnL: **+$21.01** (dev gate: above $0 — passes)
+- Net PnL: **+$20.27** (dev gate: above $0 — passes)
 - Trades: **2** (1 round trip, win rate 100%)
-- Max drawdown: **0.81%** (limit 25%)
-- Net PnL at 2x fees: **+$20.20**
-- Deterministic: 3 local grades, identical action log
-  (`a8306365c136f7a751bdc622fd57978a9fbd11af9a40e5d1ce3c973b1cbcc15c`)
+- Max drawdown: **0.88%** (limit 25%)
+- Net PnL at 2x fees: **+$19.46**
+- Deterministic: 2 local grades, identical action log
+  (`4198e4bc140cbea0a1a7f6372b9ea5b64c81b3029f1cfcf71f4eb609a9f2e471`)
+
+The trailing stop is 60 bps (not 50): the deepest pullback inside the
+dev window's winning run reached 0.46% (bar 1093), so 50 bps survived it
+by only 4 bps. A 40/45 bps trail exits mid-run there and nets only
++$13.64. 60 bps keeps every intra-run pullback observed (max 0.47%)
+survivable with 13 bps of headroom, at a measured dev cost of $0.74.
 
 ## Files
 

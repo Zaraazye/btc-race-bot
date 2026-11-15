@@ -21,7 +21,7 @@
 // return never fired) and a sharp bounce at bar 941 (60m return negative).
 //
 // Exit (whole position):
-//   - trailing stop 50 bps below the highest close since entry, or
+//   - trailing stop 60 bps below the highest close since entry, or
 //   - 30-minute return below 0 (the momentum is dead), or
 //   - 240 bars held (time stop).
 //
@@ -46,8 +46,15 @@ const IGNITION_BPS = 130;
 const CONFIRM_BPS = 50;
 /** Never buy when the 60-minute return is below this, in bps. */
 const WATERFALL_BPS = -150;
-/** Trailing stop below the highest close since entry, in bps. */
-const TRAIL_BPS = 50;
+/** Trailing stop below the highest close since entry, in bps.
+ * 60, not 50: on the dev window the deepest pullback inside the winning
+ * run reached 0.46% (bar 1093), so a 50 bps trail survived it by only
+ * 4 bps — noise, not design. Grade-local proves the failure mode: a
+ * 40/45 bps trail exits mid-run at bar 1093 and nets only +$13.64
+ * (vs +$21.01). 60 bps keeps every intra-run pullback observed on dev
+ * (max 0.47%) survivable with 13 bps of headroom, at a measured dev
+ * cost of $0.74 (exit one bar later on the topped-out run). */
+const TRAIL_BPS = 60;
 /** Longest a position is held, in bars. */
 const MAX_HOLD_BARS = 240;
 /** Fallback arming bars (guardrail insurance). */
